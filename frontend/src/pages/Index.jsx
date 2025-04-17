@@ -1,13 +1,54 @@
-
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Instagram } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { auth } from "../lib/api";
+import { useToast } from "@/components/ui/use-toast";
 
 const Index = () => {
-  const login = () => {
-    // This would handle actual Instagram OAuth in a real implementation
-    localStorage.setItem('isLoggedIn', 'true');
-    window.location.href = '/feed';
+  const [authUrl, setAuthUrl] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    // Check if already logged in
+    if (auth.isLoggedIn()) {
+      navigate("/profile");
+      return;
+    }
+    
+    // Get Instagram auth URL
+    const fetchAuthUrl = async () => {
+      try {
+        const url = await auth.getAuthUrl();
+        setAuthUrl(url);
+      } catch (error) {
+        console.error("Error fetching auth URL:", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Could not connect to Instagram API"
+        });
+      }
+    };
+    
+    fetchAuthUrl();
+  }, [navigate, toast]);
+
+  const handleLogin = () => {
+    setLoading(true);
+    
+    if (authUrl) {
+      window.location.href = authUrl;
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Instagram login is not available"
+      });
+      setLoading(false);
+    }
   };
 
   return (
@@ -28,12 +69,19 @@ const Index = () => {
         </div>
         
         <Button 
-          onClick={login}
+          onClick={handleLogin}
           className="w-full instagram-gradient hover:opacity-90 transition-opacity hover-scale"
           size="lg"
+          disabled={loading || !authUrl}
         >
-          <Instagram className="mr-2 h-5 w-5" />
-          Log in with Instagram
+          {loading ? (
+            <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+          ) : (
+            <>
+              <Instagram className="mr-2 h-5 w-5" />
+              Log in with Instagram
+            </>
+          )}
         </Button>
         
         <div className="mt-8 text-sm text-muted-foreground">
@@ -51,7 +99,7 @@ const Index = () => {
       
       <div className="fixed bottom-4 right-4">
         <p className="text-xs text-muted-foreground">
-          © 2025 InstaClone. Not affiliated with Instagram.
+          © 2023 InstaClone. Not affiliated with Instagram.
         </p>
       </div>
     </div>
