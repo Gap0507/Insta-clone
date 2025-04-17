@@ -4,11 +4,8 @@
 A fully-featured Instagram clone that integrates with the Instagram API to display user profiles, media feeds, and enables interactive commenting functionality.
 
 ## 🎥 Demo Video
-<div style="position: relative; padding-bottom: 53.125%; height: 0;">
-  <iframe src="https://www.loom.com/embed/f3f20bdee8d54b78ba87e57824eb7a46?sid=c2480d20-54e3-41c0-8cad-6a1c1303ff7e" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
-</div>
+[![Watch the demo video](https://cdn.loom.com/sessions/thumbnails/f3f20bdee8d54b78ba87e57824eb7a46-with-play.gif)](https://www.loom.com/share/f3f20bdee8d54b78ba87e57824eb7a46)
 
-**[Click here to watch the demo video](https://www.loom.com/share/f3f20bdee8d54b78ba87e57824eb7a46?sid=c2480d20-54e3-41c0-8cad-6a1c1303ff7e)** if the embedded video doesn't display properly.
 
 ## 🚀 Live Demo
 
