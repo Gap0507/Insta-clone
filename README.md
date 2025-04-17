@@ -4,7 +4,7 @@
 A fully-featured Instagram clone that integrates with the Instagram API to display user profiles, media feeds, and enables interactive commenting functionality.
 
 ## 🎥 Demo Video
-[![Watch the demo video](https://cdn.loom.com/sessions/thumbnails/f3f20bdee8d54b78ba87e57824eb7a46-with-play.gif)](https://www.loom.com/share/f3f20bdee8d54b78ba87e57824eb7a46)
+[Watch the demo video](https://cdn.loom.com/sessions/thumbnails/f3f20bdee8d54b78ba87e57824eb7a46-with-play.gif)](https://www.loom.com/share/f3f20bdee8d54b78ba87e57824eb7a46)
 
 
 ## 🚀 Live Demo
