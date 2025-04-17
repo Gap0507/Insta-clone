@@ -47,7 +47,7 @@ router.get('/profile', async (req, res) => {
         `https://graph.facebook.com/v19.0/${instagramId}`,
         {
           params: {
-            fields: 'id,username,profile_picture_url',
+            fields: 'id,username,profile_picture_url,followers_count,follows_count,media_count',
             access_token: token
           }
         }
@@ -60,12 +60,15 @@ router.get('/profile', async (req, res) => {
       
       await user.save();
       
-      // Return updated user profile
+      // Return updated user profile with follower and following counts
       return res.json({
         id: user._id,
         instagramId: user.instagramId,
         username: user.username,
-        profilePicture: user.profilePicture
+        profilePicture: user.profilePicture,
+        followerCount: instagramResponse.data.followers_count || 0,
+        followingCount: instagramResponse.data.follows_count || 0,
+        mediaCount: instagramResponse.data.media_count || 0
       });
       
     } catch (error) {

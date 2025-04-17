@@ -1,7 +1,6 @@
-
 import { Link, useLocation } from 'react-router-dom';
 import { ThemeToggle } from './ThemeToggle';
-import { Home, User, Image, LogOut } from 'lucide-react';
+import { User, Image, LogOut } from 'lucide-react';
 
 export function Layout({ children }) {
   const location = useLocation();
@@ -19,12 +18,6 @@ export function Layout({ children }) {
             
             {isLoggedIn && (
               <nav className="flex items-center space-x-2">
-                <Link 
-                  to="/" 
-                  className={`p-2 rounded-full hover:bg-secondary transition-colors ${location.pathname === '/' ? 'text-primary' : ''}`}
-                >
-                  <Home className="h-5 w-5" />
-                </Link>
                 <Link 
                   to="/profile" 
                   className={`p-2 rounded-full hover:bg-secondary transition-colors ${location.pathname === '/profile' ? 'text-primary' : ''}`}

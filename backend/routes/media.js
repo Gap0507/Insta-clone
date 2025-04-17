@@ -4,17 +4,33 @@ const User = require('../models/User');
 const router = express.Router();
 
 /**
+ * Extract token from request
+ * Checks both the Authorization header and query params
+ */
+function getTokenFromRequest(req) {
+  // Check Authorization header first (Bearer token)
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    return authHeader.substring(7);
+  }
+  
+  // Fall back to query param or body param
+  return req.query.token || req.body.token;
+}
+
+/**
  * @route   GET /api/media/feed
  * @desc    Get user's media feed
  * @access  Private
  */
 router.get('/feed', async (req, res) => {
-  const { token } = req.query;
-  const limit = req.query.limit || 10;
+  const token = getTokenFromRequest(req);
 
   if (!token) {
     return res.status(401).json({ error: 'Access token is required' });
   }
+
+  const limit = req.query.limit || 10;
 
   try {
     // First find the user to get their Instagram ID
@@ -31,7 +47,7 @@ router.get('/feed', async (req, res) => {
       `https://graph.facebook.com/v19.0/${instagramId}/media`,
       {
         params: {
-          fields: 'id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,username',
+          fields: 'id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,username,like_count,comments_count',
           access_token: token,
           limit: limit
         }
@@ -60,7 +76,7 @@ router.get('/feed', async (req, res) => {
  */
 router.get('/:mediaId/comments', async (req, res) => {
   const { mediaId } = req.params;
-  const { token } = req.query;
+  const token = getTokenFromRequest(req);
 
   if (!token) {
     return res.status(401).json({ error: 'Access token is required' });
@@ -90,13 +106,55 @@ router.get('/:mediaId/comments', async (req, res) => {
 });
 
 /**
+ * @route   POST /api/media/:mediaId/comment
+ * @desc    Add a comment to a media
+ * @access  Private
+ */
+router.post('/:mediaId/comment', async (req, res) => {
+  const { mediaId } = req.params;
+  const { message } = req.body;
+  const token = getTokenFromRequest(req);
+
+  if (!token) {
+    return res.status(401).json({ error: 'Access token is required' });
+  }
+
+  if (!message) {
+    return res.status(400).json({ error: 'Message is required' });
+  }
+
+  try {
+    const response = await axios.post(
+      `https://graph.facebook.com/v19.0/${mediaId}/comments`,
+      { message },
+      {
+        params: {
+          access_token: token
+        }
+      }
+    );
+
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error posting comment:', error.response ? error.response.data : error);
+    
+    if (error.response && error.response.status === 400) {
+      return res.status(401).json({ error: 'Invalid or expired token' });
+    }
+    
+    res.status(500).json({ error: 'Error posting comment' });
+  }
+});
+
+/**
  * @route   POST /api/media/:commentId/reply
  * @desc    Reply to a comment
  * @access  Private
  */
 router.post('/:commentId/reply', async (req, res) => {
   const { commentId } = req.params;
-  const { token, message } = req.body;
+  const { message } = req.body;
+  const token = getTokenFromRequest(req);
 
   if (!token) {
     return res.status(401).json({ error: 'Access token is required' });

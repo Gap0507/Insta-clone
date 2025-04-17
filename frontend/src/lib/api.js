@@ -147,6 +147,28 @@ export const media = {
     }
   },
   
+  // Add a comment to a media
+  addComment: async (mediaId, message) => {
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (!token) throw new Error('No token found');
+    
+    try {
+      const response = await api.post(`/media/${mediaId}/comment`, 
+        { message },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+      
+      return response.data;
+    } catch (error) {
+      console.error('Error posting comment:', error.response?.data || error.message);
+      throw error;
+    }
+  },
+  
   // Reply to a comment
   replyToComment: async (commentId, message) => {
     const token = localStorage.getItem(TOKEN_KEY);
@@ -158,8 +180,7 @@ export const media = {
         {
           headers: {
             'Authorization': `Bearer ${token}`
-          },
-          params: { token }
+          }
         }
       );
       

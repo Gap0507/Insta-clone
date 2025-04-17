@@ -102,7 +102,7 @@ console.log('User permissions:', debugPermissions.data);
     if (!accountsResponse.data.data || accountsResponse.data.data.length === 0) {
       // Fallback: Use page ID directly and long-lived token
       console.log('No pages found via API, using direct page ID');
-      pageId = '625457237316305'; // Your GarvShah page ID
+      pageId = process.env.PAGE_ID; // Use environment variable instead of hardcoded value
       pageAccessToken = longLivedToken; // Always use long-lived token here
     } else {
       pageId = accountsResponse.data.data[0].id;
